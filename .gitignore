@@ -1,0 +1,84 @@
+# ============================================
+# Python
+# ============================================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.sd_env/
+.sd_mps/
+*.egg-info/
+
+# Byte-compiled
+*.DS_Store
+
+# ============================================
+# Jupyter / Logs
+# ============================================
+.ipynb_checkpoints/
+*.log
+
+# ============================================
+# Diffusers / Stable Diffusion
+# ============================================
+
+# 모델 가중치 파일들 (절대 올리면 안 됨)
+*.safetensors
+*.ckpt
+*.pt
+*.bin
+
+# Hugging Face 캐시
+~/.cache/huggingface/
+huggingface/
+
+# Diffusers Pipeline 저장 경로
+*/models/
+*/checkpoints/
+*/custom_stable_diffusion/
+
+# ============================================
+# Output / Generated Files
+# ============================================
+output/
+outputs/
+results/
+samples/
+images/
+*.jpg
+*.png
+*.jpeg
+*.gif
+#*.json
+data/
+#*.txt
+
+# ============================================
+# Mac / Editor
+# ============================================
+.DS_Store
+*.swp
+*.swo
+
+# VSCode
+.vscode/
+.history/
+
+# ============================================
+# Docker / Build
+# ============================================
+build/
+dist/
+*.tar
+*.tar.gz
+
+# ============================================
+# Node / Web (만약 웹 클라이언트 추가될 경우 대비)
+# ============================================
+node_modules/
+npm-debug.log
+yarn-error.log
