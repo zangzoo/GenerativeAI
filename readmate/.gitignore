@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# HuggingFace cache
+.cache/
+.cache/huggingface/
+huggingface/
+transformers_cache/
+
+# RAG store artifacts
+*.pkl
+*.faiss
+*.json
+index/
+indexes/
+storage/
+**/faiss_index*
+**/bm25*
+**/chunks.pkl
+**/meta.json
+
+# FAISS / BM25
+*.index
+
+# Model weights (local LLaMA, GGUF, etc.)
+*.bin
+*.gguf
+*.pth
+*.pt
+
+# dotenv
+.env
+.env.*
+
+# Build or temp
+tmp/
+temp/
