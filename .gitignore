@@ -9,9 +9,11 @@ __pycache__/
 # Virtual environment
 venv/
 env/
+.env
 .sd_env/
 .sd_mps/
 *.egg-info/
+backend/**/*.env
 
 # Byte-compiled
 *.DS_Store

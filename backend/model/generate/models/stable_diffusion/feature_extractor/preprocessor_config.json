@@ -8,12 +8,13 @@
   "do_normalize": true,
   "do_rescale": true,
   "do_resize": true,
+  "feature_extractor_type": "CLIPFeatureExtractor",
   "image_mean": [
     0.48145466,
     0.4578275,
     0.40821073
   ],
-  "image_processor_type": "CLIPImageProcessor",
+  "image_processor_type": "CLIPFeatureExtractor",
   "image_std": [
     0.26862954,
     0.26130258,

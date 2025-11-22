@@ -1,7 +1,7 @@
 {
   "_class_name": "UNet2DConditionModel",
-  "_diffusers_version": "0.35.2",
-  "_name_or_path": "/Users/zangzoo/.cache/huggingface/hub/models--runwayml--stable-diffusion-v1-5/snapshots/451f4fe16113bff5a5d2269ed5ad43b0592e9a14/unet",
+  "_diffusers_version": "0.25.0.dev0",
+  "_name_or_path": "../KO-anything-v4-5",
   "act_fn": "silu",
   "addition_embed_type": null,
   "addition_embed_type_num_heads": 64,
