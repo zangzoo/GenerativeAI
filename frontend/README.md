@@ -57,25 +57,26 @@ npm start
 
 ```
 
-✨ 주요 기능 요약
-🏠 Home Page
+## ✨ 주요 기능 요약
 
-[사용자 이름]님의 책장
+### 🏠 Home Page
 
-책 표지(BookCard)를 가로 스크롤로 표시
+- [user]님의 책장
 
-오른쪽 "My Album" 박스에서
+- 책 표지(BookCard)를 가로 스크롤로 표시
 
-public/album 이미지들이 10초 간격 자동 슬라이드
+- 오른쪽 "My Album" 박스에서
 
-📖 Book Detail
+- public/album 이미지들이 10초 간격 자동 슬라이드
 
-책 내용 표시
+### 📖 Book Detail
 
-오른쪽 AI 챗봇(요약/질문/이미지 생성 → 추후 백엔드 연결)
+- 책 내용 표시
 
-🖼 Album
+- 오른쪽 AI 챗봇(요약/질문/이미지 생성 → 추후 백엔드 연결)
 
-생성 이미지 전체 조회
+### 🖼 Album
 
-클릭 시 AlbumDetail 페이지로 이동
+- 생성 이미지 전체 조회
+
+- 클릭 시 AlbumDetail 페이지로 이동
