@@ -51,8 +51,8 @@ outputs/
 results/
 samples/
 images/
-*.jpg
-*.png
+#*.jpg
+#*.png
 *.jpeg
 *.gif
 #*.json
