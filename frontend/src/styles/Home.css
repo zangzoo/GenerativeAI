@@ -1,0 +1,30 @@
+.home-container {
+  padding: 30px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 25px 0 18px 0;
+  margin-left: 75px;
+}
+
+.main-section {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.book-list-container {
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 10px;
+  flex-grow: 1; /* 왼쪽 영역 넓게 */
+  margin-left: 75px;
+}
+
+.book-list {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}

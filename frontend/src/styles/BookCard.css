@@ -1,0 +1,17 @@
+.book-card {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.book-cover {
+  width: 225px; /* 표지 크기 조절 */
+  height: 330px;
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.book-cover:hover {
+  transform: scale(1.04);
+}
