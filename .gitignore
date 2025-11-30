@@ -10,6 +10,7 @@ __pycache__/
 venv/
 env/
 .env
+.venv
 .sd_env/
 .sd_mps/
 *.egg-info/

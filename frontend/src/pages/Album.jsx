@@ -114,7 +114,7 @@ export default function Album() {
           <button onClick={() => navigate("/")} className="back-button">
             ←
           </button>
-          <h1 className="album-title">예린의 앨범</h1>
+          <h1 className="album-title">예린님의 앨범</h1>
         </div>
 
         <div className="header-right">

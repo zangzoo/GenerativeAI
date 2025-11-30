@@ -7,17 +7,31 @@ RAG MVP: Hybrid Search (BM25 + Dense) + Llama
 - Hybrid: 두 점수 결합 → 더 정확한 retrieval
 
 설치:
-  pip install rank-bm25 faiss-cpu sentence-transformers transformers torch --upgrade
+  pip install rank-bm25 faiss-cpu sentence-transformers transformers torch --upgrade python-dotenv numpy openai gradio
+
 
 예시:
   .venv/Scripts/activate 
-  (1)cli 모드
+  (1)cli 모드  ... doc_id는 임의 지정 가능, txt 파일 경로 지정
+  python backend/model/read_summarize/mvp_reader.py ingest --doc_id rng --path backend/model/read_summarize/romeoandjuliet.txt --unit para --window 2 --stride 1
+  python backend/model/read_summarize/mvp_reader.py ask --doc_id rng -q "로미오는 왜 죽었어?" -k 6
+  python backend/model/read_summarize/mvp_reader.py summarize --doc_id rng --sentences 7
+
+
   python mvp_reader.py ingest --doc_id novel --path luckyday.txt --unit para
   python mvp_reader.py ask --doc_id novel -q "주인공은 어디 갔어?" -k 6
   python mvp_reader.py summarize --doc_id novel --sentences 7
 
   (2)gradio UI 모드
+  python backend/model/read_summarize/mvp_reader.py ui
+
   python mvp_reader.py ui
+
+  로미오는 무슨 가문의 딸이었지?
+  티볼트 죽었어? 줄리엣과 무슨 사이길래 슬퍼하지?
+  머큐리 죽었어? 로미오와 무슨 사이길래 슬퍼하지?
+  로미오는 왜 추방됐어?
+  
 
 1️⃣ 김 첨지는 왜 오늘을 “운수 좋은 날”이라고 생각했나요?
 2️⃣ 김 첨지가 설렁탕을 사가려 한 이유는 무엇인가요?
@@ -43,7 +57,7 @@ from openai import OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # ---------- 저장 루트 ----------
-STORAGE_ROOT = Path("storage")
+STORAGE_ROOT = Path(__file__).parent / "storage"
 
 # ---------- 임베딩 모델 ----------
 _EMB_MODEL_NAME = os.getenv("EMB_MODEL", "dragonkue/BGE-m3-ko")
