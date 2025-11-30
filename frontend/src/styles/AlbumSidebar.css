@@ -2,9 +2,15 @@
   width: 400px;
   flex-shrink: 0;
   height: 100vh;
-  background-color: #cebba7; /* 더 진한 배경 */
+  background-color: #cebba7;
   padding-top: 40px;
-  position: relative;
+
+  /* 🔥 사이드바가 항상 위로 올라오게 */
+  position: fixed;       /* relative → fixed */
+  right: 0;
+  top: 0;
+  z-index: 9999;         /* 가장 위로 */
+
   box-shadow: inset 2px 0 6px rgba(0, 0, 0, 0.1);
 }
 
