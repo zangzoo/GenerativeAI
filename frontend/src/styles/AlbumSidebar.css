@@ -133,7 +133,7 @@
   border-radius: 14px;
   padding: 14px 16px 18px;
   box-shadow: 0 10px 18px rgba(0, 0, 0, 0.22);
-  transform: rotate(-1.2deg);
+  transform: None;
   position: relative;
 }
 

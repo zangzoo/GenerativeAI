@@ -1,6 +1,10 @@
 .book-card {
   cursor: pointer;
   display: inline-block;
+
+  position: relative;
+  z-index: 1;  /* sidebar보다도 앞에 있게 */
+  pointer-events: auto;
 }
 
 .book-cover {
