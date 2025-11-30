@@ -166,27 +166,34 @@
 /* ======================= */
 .selection-menu {
   position: absolute;
-  background: #2f2f2f;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 8px;
   display: flex;
   gap: 8px;
+  padding: 8px 10px;
+
+  background: rgba(255, 250, 240, 0.95);  /* 🔥 크림톤 + 약간 투명 */
+  border: 1px solid #e3d7c6;             /* 🔥 부드러운 베이지 라인 */
+  border-radius: 12px;                    /* 🔥 pill edge */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+
   z-index: 9999;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   animation: fadeIn 0.15s ease-in-out;
 }
 
+/* 버튼 */
 .selection-menu button {
-  background: none;
-  border: none;
+  background: #8b6f47;   /* 🔥 독서앱 메인 컬러 */
   color: white;
+  border: none;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 8px;     /* pill 느낌 */
   cursor: pointer;
-  font-size: 14px;
+  transition: all 0.15s ease-in-out;
 }
 
 .selection-menu button:hover {
-  text-decoration: underline;
+  background: #a28357;    /* hover 시 밝게 */
+  transform: translateY(-1px);
 }
 
 @keyframes fadeIn {
