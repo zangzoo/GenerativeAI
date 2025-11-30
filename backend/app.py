@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, Form
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -9,6 +9,7 @@ from pathlib import Path
 import shutil
 import base64
 from io import BytesIO
+from fastapi.responses import PlainTextResponse
 
 
 # === Import Model Logic ===
@@ -174,10 +175,24 @@ async def generate(prompt: str = Form(...), steps: int = Form(30)):
         return JSONResponse(status_code=500, content={"error": str(e)})
 
 
+BASE_DIR = Path(__file__).resolve().parent
+BOOK_DIR = BASE_DIR / "model" / "read_summarize"
+
+@app.get("/api/book/{book_id}")
+def get_book(book_id: str):
+    # print(f"📖 요청 들어온 book_id: {book_id}")
+    book_path = BOOK_DIR / f"{book_id}.txt"
+    # print(f"➡️ 찾는 파일 경로: {book_path}")
+
+    try:
+        with open(book_path, "r", encoding="utf-8") as f:
+            return f.read()
+    except Exception as e:
+        return f"파일을 불러올 수 없습니다: {e}"
+    
 # =========================================================
 # Health Check
 # =========================================================
 @app.get("/", tags=["🩺 Health"])
 async def root():
     return {"message": "🚀 ReadingMate API is running!"}
-

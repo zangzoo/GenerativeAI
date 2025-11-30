@@ -4,11 +4,15 @@ import BookCard from "../components/BookCard";
 import "../styles/Home.css";
 import { useState } from "react";
 import AlbumSidebar from "../components/AlbumSidebar";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [username] = useState("예린");
+  const navigate = useNavigate();
+
 
   const books = [
+    { id: "romeoandjuliet", cover: "/covers/book7.png" },
     { id: 1, cover: "/covers/book1.png" },
     { id: 2, cover: "/covers/book2.png" },
     { id: 3, cover: "/covers/book3.png" },
@@ -32,10 +36,17 @@ export default function Home() {
 
             {/* 책 리스트 */}
             <div className="book-list">
-              {books.map((b) => (
-                <BookCard key={b.id} id={b.id} cover={b.cover} />
-              ))}
-            </div>
+
+            {books.map((b) => (
+              <BookCard
+                key={b.id}
+                id={b.id}
+                cover={b.cover}
+                onClick={() => navigate(`/book/${b.id}`)}
+              />
+            ))}
+          </div>
+
           </div>
 
           {/* ★ 나무 선반 (화분과 책 모두 아래) */}

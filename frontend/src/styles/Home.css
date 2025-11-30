@@ -72,7 +72,9 @@ html {
   display: flex;
   gap: 45px;
   flex-wrap: nowrap;
+  z-index: 5;
 }
+
 
 /* ★ 나무 선반 - 화분과 책 모두 아래 깔림 */
 /* 나무 선반 */
