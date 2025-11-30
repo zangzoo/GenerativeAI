@@ -1,44 +1,22 @@
-/* 전체 두 영역 */
+/* 전체 두 영역 (왼쪽 리더 + 오른쪽 채팅) */
 .reading-layout {
   display: flex;
   height: 100vh;
   overflow: hidden;
+  background: #fdf8f2;
 }
 
-/* 드래그 메뉴 */
-.selection-menu {
-  position: absolute;
-  background: #2f2f2f;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 8px;
-  display: flex;
-  gap: 8px;
-  z-index: 9999;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-
-.selection-menu button {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.selection-menu button:hover {
-  text-decoration: underline;
-}
-
-/* 로딩 화면 */
+/* ======================= */
+/* 로딩 스크린 */
+/* ======================= */
 .loading-screen {
   position: fixed;
   inset: 0;
-  background: #fdf8f2;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background: #fdf8f2;
   z-index: 9999;
 }
 
@@ -64,7 +42,9 @@
   font-family: "Noto Serif KR", serif;
 }
 
-/* LEFT */
+/* ======================= */
+/* LEFT : Reader */
+/* ======================= */
 .reader-left {
   flex: 4;
   display: flex;
@@ -72,7 +52,7 @@
   background: #fdf8f2;
 }
 
-/* 상단 */
+/* 상단 제목 */
 .reader-header {
   display: flex;
   justify-content: space-between;
@@ -80,16 +60,22 @@
   padding: 20px 40px;
   background: #f3e9dc;
   border-bottom: 2px solid #dac7a7;
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 
 .book-title {
-  font-size: 28px;
-  color: #8b6f47;
   margin: 0;
+  font-size: 28px; /* 제목 크기 고정 */
+  color: #8b6f47;
+  font-family: "Noto Serif KR", serif;
 }
 
+/* 글자 크기 조절 */
 .font-controls {
   display: flex;
+  align-items: center;
   gap: 10px;
 }
 
@@ -97,18 +83,31 @@
   padding: 5px 10px;
   background: #8b6f47;
   color: white;
-  border: none;
   border-radius: 6px;
+  border: none;
   cursor: pointer;
 }
 
-/* 본문 */
+.font-controls span {
+  font-size: 14px;
+}
+
+/* 본문 컨테이너 (높이 고정, 내부에 실제 텍스트 박스) */
 .reader-page {
   flex: 1;
+  overflow: hidden;
+  display: flex;
+}
+
+/* 실제 텍스트가 그려지는 박스 */
+.reader-page-inner {
   padding: 40px 80px;
-  white-space: pre-wrap;
   line-height: 1.9;
-  overflow: hidden;   /* 🔥 페이지 나눔 시 필요 */
+  white-space: pre-wrap;
+  font-family: "Noto Serif KR", serif;
+  color: #3d2d1f;
+  width: 100%;
+  box-sizing: border-box; /* padding 포함해서 width 계산 */
 }
 
 /* 페이지 네비 */
@@ -124,21 +123,79 @@
 
 .reader-controls button {
   padding: 8px 18px;
-  background: #8b6f47;
-  color: white;
   border: none;
   border-radius: 8px;
+  background: #8b6f47;
+  color: white;
+  cursor: pointer;
 }
 
 .reader-controls button:disabled {
   background: #c1b2a0;
+  cursor: default;
 }
 
-/* 숨김 측정 박스 */
+/* 화면과 동일 스타일의 숨겨진 측정 박스 */
 .measure-box {
   visibility: hidden;
   position: absolute;
-  white-space: pre-wrap;
   left: -9999px;
   top: -9999px;
+  white-space: pre-wrap;
+  font-family: "Noto Serif KR", serif;
+  line-height: 1.9;
+  padding: 40px 80px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* ======================= */
+/* RIGHT : Chat Panel (ChatPanel.jsx에서 사용) */
+/* ======================= */
+.reader-chat {
+  flex: 1;
+  background: #faf6f1;
+  border-left: 2px solid #d0c2b0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+/* ======================= */
+/* 드래그 선택 메뉴 */
+/* ======================= */
+.selection-menu {
+  position: absolute;
+  background: #2f2f2f;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: flex;
+  gap: 8px;
+  z-index: 9999;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+.selection-menu button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.selection-menu button:hover {
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
