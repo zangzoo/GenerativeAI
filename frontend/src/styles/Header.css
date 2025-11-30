@@ -1,5 +1,9 @@
 .header {
-  font-size: 26px;
   font-weight: bold;
-  margin: 75px;
+  font-size: 32px;
+  font-weight: 700;
+  color: #8b6f47; /* 따뜻한 브라운 */
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5),
+    2px 2px 4px rgba(139, 111, 71, 0.2);
+  letter-spacing: 0.5px;
 }

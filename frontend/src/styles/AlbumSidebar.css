@@ -1,5 +1,6 @@
 .album-sidebar {
-  width: 260px;
+  width: 400px;
+  flex-shrink: 0;
   height: 100vh;
   background-color: #cebba7; /* 더 진한 배경 */
   padding-top: 40px;
@@ -7,30 +8,148 @@
   box-shadow: inset 2px 0 6px rgba(0, 0, 0, 0.1);
 }
 
+/* 1. My Album 카드 */
 .album-card {
-  width: 110px;
-  height: 150px;
-  background: white;
-  border-radius: 15px;
-  margin: 0 auto;
-  padding: 10px;
-  text-align: center;
-  font-weight: bold;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-left: 5px;
+  width: 100%;
+  background-color: #fffdf7;
+  border-radius: 18px;
+  padding: 18px 16px 14px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+  position: relative;
 }
 
-.album-image-box {
-  width: 140px;
-  height: 160px;
-  background: #ddd;
+/* 위에 붙어 있는 핀 느낌 */
+.album-pin {
+  position: absolute;
+  top: -10px;
+  right: 22px;
+  width: 50px;
+  height: 14px;
+  border-radius: 8px;
+  background: #e96f5c;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+
+.album-card-title {
+  font-weight: 800;
+  font-size: 18px;
+  margin: 0 0 4px;
+  color: #3d2d20;
+}
+
+.album-card-sub {
+  font-size: 13px;
+  color: #7b6a5a;
+  margin: 0 0 10px;
+}
+
+/* 썸네일 세 개 */
+.album-thumb-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  align-items: center;
+}
+
+.album-thumb {
+  width: 50%;
+  height: 50%;
   border-radius: 10px;
   overflow: hidden;
-  margin: 30px auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background-color: #e7ddd0;
 }
 
-.album-image-box img {
+.album-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+/* 2. 이번 주 독서 시간 카드 */
+.weekly-card {
+  margin-top: 50px;
+  margin-left: 5px;
+  width: 100%;
+  height: 100px;
+  background-color: #f3e0c5;
+  border-radius: 16px;
+  padding: 16px 16px 14px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+.weekly-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #4c3826;
+  margin: 0 0 6px;
+}
+
+.weekly-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: #4c3826;
+  margin: 0 0 10px;
+}
+
+/* 프로그레스 바 */
+.progress-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background-color: #e3cdb2;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f7b765 0%, #f1784b 100%);
+}
+
+/* 0h ~ 10h 눈금 */
+.weekly-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #715b45;
+}
+
+/* 3. 포스트잇 카드 */
+.postit-card {
+  margin-top: 50px;
+  margin-left: 5px;
+  width: 100%;
+  background-color: #ffe7b3;
+  border-radius: 14px;
+  padding: 14px 16px 18px;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.22);
+  transform: rotate(-1.2deg);
+  position: relative;
+}
+
+.postit-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: #5a3f25;
+}
+
+.postit-text {
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0 0 10px;
+  color: #6a4b2b;
+}
+
+/* 하단 귀여운 하트 */
+.postit-heart {
+  position: absolute;
+  right: 18px;
+  bottom: 10px;
+  font-size: 16px;
+  color: #e45a4a;
 }
