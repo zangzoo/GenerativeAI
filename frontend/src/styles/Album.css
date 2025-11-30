@@ -1,0 +1,184 @@
+/* src/styles/Album.css */
+
+.album-page {
+  min-height: 100vh;
+  background-color: #f3e9dc;
+  padding: 40px 60px;
+}
+
+/* 헤더 */
+.album-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-button {
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  border: 2px solid #9d7a54;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #9d7a54;
+  color: white;
+  transform: translateX(-3px);
+}
+
+.album-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #8b6f47;
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  gap: 12px;
+}
+
+.action-button {
+  padding: 10px 20px;
+  background-color: #fff;
+  border: 2px solid #9d7a54;
+  border-radius: 8px;
+  color: #9d7a54;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-button:hover {
+  background-color: #9d7a54;
+  color: white;
+}
+
+.action-button.active {
+  background-color: #9d7a54;
+  color: white;
+}
+
+.action-button.delete {
+  border-color: #e96f5c;
+  color: #e96f5c;
+}
+
+.action-button.delete:hover {
+  background-color: #e96f5c;
+  color: white;
+}
+
+/* 사진 그리드 */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  padding: 20px 0;
+}
+
+/* 사진 카드 */
+.photo-card {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  max-width: 500px; /* ★ 카드 최대 너비 제한 */
+  margin: 0 auto; /* ★ 각 카드도 가운데 정렬 */
+}
+
+.photo-card:hover {
+  transform: translateY(-5px);
+}
+
+.photo-card.selected .polaroid {
+  box-shadow: 0 8px 24px rgba(157, 122, 84, 0.4);
+  border-color: #9d7a54;
+}
+
+/* 선택 체크박스 */
+.photo-checkbox {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 28px;
+  height: 28px;
+  background-color: #9d7a54;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 폴라로이드 스타일 */
+.polaroid {
+  background-color: #fff;
+  padding: 12px 12px 20px;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e5d5c5;
+  transition: all 0.2s ease;
+}
+
+.photo-image {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  border-radius: 2px;
+  margin-bottom: 12px;
+}
+
+.photo-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-caption {
+  font-size: 13px;
+  color: #5a4a3a;
+  text-align: center;
+  margin: 0;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* 반응형 */
+@media (max-width: 1200px) {
+  .photo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .photo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .album-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+}

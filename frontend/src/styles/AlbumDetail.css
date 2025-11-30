@@ -1,0 +1,193 @@
+/* src/styles/AlbumDetail.css */
+
+.album-detail-page {
+  min-height: 100vh;
+  background-color: #f3e9dc;
+  padding: 40px 60px;
+}
+
+/* 헤더 */
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 50px;
+}
+
+.header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.back-button {
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  border: 2px solid #9d7a54;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.back-button:hover {
+  background-color: #9d7a54;
+  color: white;
+  transform: translateX(-3px);
+}
+
+.book-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.book-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #8b6f47;
+  margin: 0;
+}
+
+.save-date {
+  font-size: 14px;
+  color: #9d7a54;
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  gap: 12px;
+}
+
+.action-button {
+  padding: 10px 20px;
+  background-color: #fff;
+  border: 2px solid #9d7a54;
+  border-radius: 8px;
+  color: #9d7a54;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-button:hover {
+  background-color: #9d7a54;
+  color: white;
+}
+
+.action-button.delete {
+  border-color: #e96f5c;
+  color: #e96f5c;
+}
+
+.action-button.delete:hover {
+  background-color: #e96f5c;
+  color: white;
+}
+
+/* ★ 메인 컨텐츠 - 완전히 가운데 정렬 */
+.detail-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 가로 가운데 */
+  gap: 40px;
+  max-width: 400px;
+  margin: 0 auto; /* 컨테이너 자체도 가운데 */
+}
+
+/* ★ 사진 - 완전 중앙 배치 */
+.detail-photo {
+  width: 100%;
+  max-width: 600px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  display: flex; /* ★ 추가 */
+  justify-content: center; /* ★ 추가 */
+  align-items: center; /* ★ 추가 */
+}
+
+.detail-photo img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+/* 구절 섹션 */
+.detail-quote {
+  width: 200%;
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  position: relative;
+}
+
+.quote-mark {
+  font-size: 60px;
+  color: #e8d4ba;
+  font-family: Georgia, serif;
+  line-height: 0.8;
+  margin-bottom: 20px;
+}
+
+.quote-text {
+  font-size: 22px;
+  line-height: 1.8;
+  color: #4a3826;
+  margin: 0 0 30px;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.quote-divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #d4915d 0%, #b87641 100%);
+  border-radius: 2px;
+  margin: 30px 0 20px;
+}
+
+.quote-caption {
+  font-size: 15px;
+  color: #7b6a5a;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .album-detail-page {
+    padding: 20px;
+  }
+
+  .detail-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .book-title {
+    font-size: 22px;
+  }
+
+  .quote-text {
+    font-size: 18px;
+  }
+
+  .detail-photo {
+    padding: 15px;
+  }
+
+  .detail-quote {
+    padding: 30px 20px;
+  }
+}

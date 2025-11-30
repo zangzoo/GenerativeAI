@@ -1,7 +1,10 @@
 // src/components/AlbumSidebar.jsx
+import { useNavigate } from "react-router-dom";
 import "../styles/AlbumSidebar.css";
 
 export default function AlbumSidebar() {
+  const navigate = useNavigate();
+
   // 앨범 썸네일 3개 (이미지 경로는 네가 쓰는 걸로 맞춰도 됨)
   const thumbs = ["/album/img1.jpg", "/album/img2.png"];
 
@@ -11,7 +14,11 @@ export default function AlbumSidebar() {
   return (
     <aside className="album-sidebar">
       {/* 1. My Album 카드 */}
-      <section className="album-card">
+      <section
+        className="album-card"
+        onClick={() => navigate("/album")}
+        style={{ cursor: "pointer" }}
+      >
         <div className="album-pin" />
         <p className="album-card-title">My Album</p>
         <p className="album-card-sub">추억을 저장해요</p>
