@@ -1,30 +1,104 @@
-.home-container {
-  padding: 30px;
+/* Home.css */
+
+/* 페이지 전체 */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
+/* 레이아웃 */
+.layout-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* 왼쪽 메인 영역 */
+.main-left {
+  flex-grow: 1;
+  padding: 40px 60px;
+  background-color: #f3e9dc;
+}
+
+/* 제목 */
 .section-title {
   font-size: 24px;
   font-weight: bold;
-  margin: 25px 0 18px 0;
-  margin-left: 75px;
+  margin: 25px 0 20px 0;
 }
 
-.main-section {
+/* ★ 선반 + 그 위 아이템들을 담는 컨테이너 */
+.shelf-row {
+  position: relative;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: flex-start;
+  margin-top: 50px;
 }
 
-.book-list-container {
-  overflow-x: auto;
-  white-space: nowrap;
-  padding-bottom: 10px;
-  flex-grow: 1; /* 왼쪽 영역 넓게 */
-  margin-left: 75px;
+/* ★ 화분 + 책들을 가로로 나열 */
+.shelf-items {
+  display: flex;
+  align-items: flex-end;
+  gap: 30px;
+  padding: 20px 20px 5px 20px; /* ★ 상단 패딩 추가 */
+  position: relative;
+  z-index: 2;
+
+  /* ★ 홈 파인 부분 배경 */
+  background: linear-gradient(
+    180deg,
+    rgba(122, 102, 71, 0.3) -10%,
+    rgba(122, 102, 71, 0.15) 30%,
+    transparent 100%
+  );
+  border-radius: 8px 8px 0 0;
 }
 
+/* 화분 이미지 */
+.plant-image {
+  width: 100px;
+  height: auto;
+  flex-shrink: 0;
+  margin-right: 20px;
+}
+
+/* 책 리스트 */
 .book-list {
   display: flex;
-  flex-direction: row;
-  gap: 30px;
+  gap: 45px;
+  flex-wrap: nowrap;
+}
+
+/* ★ 나무 선반 - 화분과 책 모두 아래 깔림 */
+/* 나무 선반 */
+.wood-shelf {
+  width: 100%;
+  height: 20px;
+  margin-top: 10px;
+  border-radius: 10px;
+  background: linear-gradient(
+    180deg,
+    #7a6647 0%,
+    /* ★ 윗부분을 살짝 더 어둡게 */ #8b7355 15%,
+    /* 중간으로 가면서 밝아짐 */ #7a6647 70%,
+    #6f5d42 100%
+  );
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -3px 5px rgba(0, 0, 0, 0.25),
+    /* ★ 상단 내부 그림자로 움푹한 느낌 */ inset 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* 오른쪽 앨범 패널 */
+.album-wrapper {
+  width: 360px;
+  padding: 20px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #d4c5b9 0%, #c9b8ad 100%);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
