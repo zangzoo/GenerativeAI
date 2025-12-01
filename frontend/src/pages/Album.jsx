@@ -1,15 +1,27 @@
 // src/pages/Album.jsx
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/Album.css";
 
 export default function Album() {
   const navigate = useNavigate();
   const [selectedPhotos, setSelectedPhotos] = useState([]);
   const [isSelectMode, setIsSelectMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [customPhotos, setCustomPhotos] = useState([]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("customAlbumPhotos");
+      const parsed = raw ? JSON.parse(raw) : [];
+      setCustomPhotos(parsed);
+    } catch (err) {
+      setCustomPhotos([]);
+    }
+  }, []);
 
   // 앨범 데이터
-  const photos = [
+  const defaultPhotos = [
     {
       id: 1,
       src: "/album/img1.jpg",
@@ -60,8 +72,11 @@ export default function Album() {
     },
   ];
 
+  const photos = [...customPhotos, ...defaultPhotos];
+
   // 사진 클릭 - 상세 페이지로 이동
   const handlePhotoClick = (photo) => {
+    if (isEditMode) return;
     if (!isSelectMode) {
       navigate(`/album/${photo.id}`, { state: { photo } });
     } else {
@@ -80,14 +95,41 @@ export default function Album() {
 
   // 선택 모드 토글
   const handleSelectMode = () => {
+    if (isEditMode) return; // 편집 모드와 동시 사용 방지
     setIsSelectMode(!isSelectMode);
     if (isSelectMode) {
       setSelectedPhotos([]);
     }
   };
 
+  // 편집 모드 토글
+  const handleEditMode = () => {
+    setIsEditMode((prev) => {
+      if (!prev) {
+        setIsSelectMode(false);
+        setSelectedPhotos([]);
+      }
+      return !prev;
+    });
+  };
+
+  const handleCaptionChange = (id, value) => {
+    setCustomPhotos((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, caption: value } : p))
+    );
+  };
+
   // 저장
   const handleSave = () => {
+    if (isEditMode) {
+      try {
+        localStorage.setItem("customAlbumPhotos", JSON.stringify(customPhotos));
+        alert("수정된 캡션을 저장했습니다.");
+      } catch (err) {
+        alert("저장 중 오류가 발생했습니다.");
+      }
+      return;
+    }
     alert("선택한 사진을 저장했습니다!");
   };
 
@@ -114,10 +156,16 @@ export default function Album() {
           <button onClick={() => navigate("/")} className="back-button">
             ←
           </button>
-          <h1 className="album-title">예린님의 앨범</h1>
+          <h1 className="album-title">수정님의 앨범</h1>
         </div>
 
         <div className="header-right">
+          <button
+            className={`action-button ${isEditMode ? "active" : ""}`}
+            onClick={handleEditMode}
+          >
+            {isEditMode ? "편집 종료" : "수정"}
+          </button>
           <button
             className={`action-button ${isSelectMode ? "active" : ""}`}
             onClick={handleSelectMode}
@@ -155,7 +203,19 @@ export default function Album() {
               <div className="photo-image">
                 <img src={photo.src} alt={photo.caption} />
               </div>
-              <p className="photo-caption">{photo.caption}</p>
+              {isEditMode && String(photo.id).startsWith("gen-") ? (
+                <input
+                  className="photo-caption edit"
+                  placeholder="캡션을 입력하세요"
+                  value={photo.caption || ""}
+                  onChange={(e) => handleCaptionChange(photo.id, e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              ) : photo.caption ? (
+                <p className="photo-caption">{photo.caption}</p>
+              ) : (
+                <p className="photo-caption empty">&nbsp;</p>
+              )}
             </div>
           </div>
         ))}

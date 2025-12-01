@@ -149,6 +149,24 @@
   font-style: italic;
 }
 
+.quote-text.edit,
+.quote-caption.edit {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #d6c8b8;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 16px;
+  background: #fffaf3;
+  color: #4a3826;
+  font-style: normal;
+}
+
+.quote-text.edit {
+  min-height: 100px;
+  resize: vertical;
+}
+
 .quote-divider {
   width: 60px;
   height: 3px;

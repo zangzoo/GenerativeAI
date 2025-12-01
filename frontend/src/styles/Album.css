@@ -164,6 +164,21 @@
   font-weight: 500;
 }
 
+.photo-caption.empty {
+  color: transparent;
+}
+
+.photo-caption.edit {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #d6c8b8;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  background: #fffaf3;
+  color: #5a4a3a;
+}
+
 /* 반응형 */
 @media (max-width: 1200px) {
   .photo-grid {
