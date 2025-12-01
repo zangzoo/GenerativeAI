@@ -108,8 +108,17 @@ async def ingest(doc_id: str = Form(...), file: UploadFile = File(...)):
 async def ask(request: AskRequest):
     """문서 기반 실시간 Retrieval + GPT reasoning"""
     try:
-        ids, scores, chunks = hybrid_retrieve(request.doc_id, request.question, k=request.k)
+        # 👉 질문이 비어있으면 400 에러 응답
+        if not request.question.strip():
+            raise HTTPException(status_code=400, detail="질문을 입력해주세요.")
 
+        # 👉 문서 ID가 존재하는지 확인
+        storage_path = Path("model/read_summarize/storage") / request.doc_id
+        if not storage_path.exists():
+            raise HTTPException(status_code=404, detail=f"문서 ID '{request.doc_id}'에 해당하는 데이터가 없습니다.")
+
+        # 🔍 검색 + 프롬프트 생성 + GPT 호출
+        ids, scores, chunks = hybrid_retrieve(request.doc_id, request.question, k=request.k)
         prompt = build_answer_prompt(request.question, chunks)
         answer = gpt4omini_chat(prompt)
 
@@ -117,7 +126,6 @@ async def ask(request: AskRequest):
 
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
-
 
 # =========================================================
 # 3️⃣ Summarization
