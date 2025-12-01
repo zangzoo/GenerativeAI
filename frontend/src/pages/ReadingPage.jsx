@@ -21,6 +21,7 @@ export default function ReadingPage() {
 
   // 페이지 계산용 숨은 박스
   const measureRef = useRef(null);
+  const chatRef = useRef(null);
 
   const titleMap = {
     romeoandjuliet: "로미오와 줄리엣",
@@ -111,6 +112,18 @@ export default function ReadingPage() {
     return () => document.removeEventListener("mouseup", handleMouseUp);
   }, []);
 
+  const handleSummaryClick = () => {
+    if (!selectedText) return;
+    chatRef.current?.summarizeSelection(selectedText);
+    setShowMenu(false);
+  };
+
+  const handleImageClick = () => {
+    if (!selectedText) return;
+    chatRef.current?.generateImageFromSelection(selectedText);
+    setShowMenu(false);
+  };
+
   if (loading) {
     return (
       <div className="loading-screen">
@@ -180,7 +193,7 @@ export default function ReadingPage() {
       </div>
 
       {/* ---------- RIGHT : 채팅 패널 ---------- */}
-      <ChatPanel docId={id} selectedText={selectedText} />
+      <ChatPanel ref={chatRef} docId={id} />
 
       {/* 드래그 플로팅 메뉴 (요약 / 이미지 생성만) */}
       {showMenu && (
@@ -188,8 +201,8 @@ export default function ReadingPage() {
           className="selection-menu"
           style={{ top: menuPos.y, left: menuPos.x }}
         >
-          <button>요약하기</button>
-          <button>이미지 생성</button>
+          <button onClick={handleSummaryClick}>요약하기</button>
+          <button onClick={handleImageClick}>이미지 생성</button>
         </div>
       )}
     </div>

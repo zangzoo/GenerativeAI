@@ -10,6 +10,7 @@ import shutil
 import base64
 from io import BytesIO
 from fastapi.responses import PlainTextResponse
+import torch
 
 
 # === Import Model Logic ===
@@ -21,7 +22,11 @@ from model.read_summarize.mvp_reader import (
 )
 
 pipe = None
+sd_device = None
 
+BASE_DIR = Path(__file__).resolve().parent
+BOOK_DIR = BASE_DIR / "model" / "read_summarize"
+SD_MODEL_PATH = BASE_DIR / "model" / "generate" / "models" / "stable_diffusion"
 
 app = FastAPI(
     title="📚 ReadingMate API",
@@ -71,6 +76,15 @@ class GenerateImageRequest(BaseModel):
 
 class GenerateImageResponse(BaseModel):
     preview_base64: str
+
+
+class QuickSummaryRequest(BaseModel):
+  text: str = Field(..., description="요약할 선택 텍스트")
+  sentences: int = Field(2, description="요약 문장 수")
+
+
+class QuickSummaryResponse(BaseModel):
+  summary: str
 
 
 # =========================================================
@@ -147,29 +161,72 @@ async def summarize(request: SummarizeRequest):
 
 
 # =========================================================
+# 3-1️⃣ Selected Text Quick Summary
+# =========================================================
+@app.post("/summarize_text", response_model=QuickSummaryResponse, tags=["📌 Summary"])
+async def summarize_text(request: QuickSummaryRequest):
+    """선택된 짧은 텍스트를 바로 요약"""
+    try:
+        if not request.text.strip():
+            raise HTTPException(status_code=400, detail="요약할 텍스트가 없습니다.")
+
+        prompt = (
+            f"다음 글을 {request.sentences}문장으로 한국어로 요약해줘.\n\n"
+            f"{request.text}"
+        )
+        answer = gpt4omini_chat(prompt)
+
+        return QuickSummaryResponse(summary=answer)
+
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+# =========================================================
 # 4️⃣ Image Generation (Lazy Stable Diffusion)
 # =========================================================
 @app.post("/generate", response_model=GenerateImageResponse, tags=["🎨 Image"])
-async def generate(prompt: str = Form(...), steps: int = Form(30)):
+async def generate(prompt: str = Form(...), steps: int = Form(60)):
     """입력 텍스트 기반 이미지 생성"""
 
     global pipe
+    global sd_device
     from diffusers import StableDiffusionPipeline, DDIMScheduler
-    import torch
 
     try:
+        # 모델 경로 존재 여부 선체크 (네트워크 다운로드 방지)
+        model_index = SD_MODEL_PATH / "model_index.json"
+        if not model_index.exists():
+            return JSONResponse(
+                status_code=503,
+                content={
+                    "error": "Stable Diffusion 모델이 없습니다. "
+                             f"{SD_MODEL_PATH}에 모델 파일을 배치한 뒤 다시 시도해주세요."
+                },
+            )
+
         # 최초 요청 시 로딩
         if pipe is None:
-            print("🚀 Loading Stable Diffusion...")
-            model_path = "./model/generate/models/stable_diffusion"
+            print(f"🚀 Loading Stable Diffusion from {SD_MODEL_PATH} ...")
+            # 디바이스 선택
+            if torch.backends.mps.is_available():
+                sd_device = torch.device("mps")
+                dtype = torch.float16
+                print("✅ Using Apple MPS (float16)")
+            else:
+                sd_device = torch.device("cpu")
+                dtype = torch.float32
+                print("✅ Using CPU (float32)")
+
             pipe = StableDiffusionPipeline.from_pretrained(
-                model_path,
-                torch_dtype=torch.float32,
-                safety_checker=None
+                str(SD_MODEL_PATH),
+                torch_dtype=dtype,
+                safety_checker=None,
+                local_files_only=True,
             )
             pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)
-            pipe.to("cpu")
-            print("✅ Ready.")
+            pipe.to(sd_device)
+            print("✅ Stable Diffusion Ready.")
 
         img = pipe(prompt, num_inference_steps=steps).images[0]
 
