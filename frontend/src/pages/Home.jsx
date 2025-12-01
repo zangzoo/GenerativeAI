@@ -7,7 +7,7 @@ import AlbumSidebar from "../components/AlbumSidebar";
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
-  const [username] = useState("예린");
+  const [username] = useState("수정");
   const navigate = useNavigate();
   const bookListRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
