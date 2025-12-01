@@ -1,5 +1,5 @@
 .album-sidebar {
-  width: 400px;
+  width: var(--sidebar-width, 400px);
   flex-shrink: 0;
   height: 100vh;
   background-color: #cebba7;
