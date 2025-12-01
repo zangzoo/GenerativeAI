@@ -79,7 +79,7 @@
   margin-top: 50px;
   margin-left: 5px;
   width: 100%;
-  height: 100px;
+  min-height: 120px;
   background-color: #f3e0c5;
   border-radius: 16px;
   padding: 16px 16px 14px;
@@ -124,6 +124,10 @@
   color: #715b45;
 }
 
+.weekly-input {
+  display: none;
+}
+
 /* 3. 포스트잇 카드 */
 .postit-card {
   margin-top: 50px;
@@ -144,11 +148,29 @@
   color: #5a3f25;
 }
 
-.postit-text {
+.postit-textarea {
+  width: 100%;
+  min-height: 60px;
+  resize: vertical;
+  border: 1px dashed #d2aa70;
+  border-radius: 10px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.85);
   font-size: 13px;
   line-height: 1.4;
-  margin: 0 0 10px;
   color: #6a4b2b;
+}
+
+.postit-save {
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: #e96f5c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
 }
 
 /* 하단 귀여운 하트 */
