@@ -1,11 +1,12 @@
 // ReadingPage.jsx
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // ★ useNavigate 추가
 import { useEffect, useState, useRef } from "react";
 import "../styles/ReadingPage.css";
 import ChatPanel from "../pages/ChatPanel";
 
 export default function ReadingPage() {
   const { id } = useParams();
+  const navigate = useNavigate(); // ★ 추가
 
   const [rawText, setRawText] = useState("");
   const [pages, setPages] = useState([]);
@@ -62,11 +63,9 @@ export default function ReadingPage() {
     const measurer = measureRef.current;
     if (!measurer) return;
 
-    // 화면에 보이는 본문과 스타일을 최대한 동일하게 맞춤
     measurer.style.fontSize = `${fontSize}px`;
-    measurer.style.lineHeight = window
-      .getComputedStyle(pageContainer)
-      .lineHeight;
+    measurer.style.lineHeight =
+      window.getComputedStyle(pageContainer).lineHeight;
     measurer.style.width = `${pageContainer.clientWidth}px`;
 
     const chars = rawText.split("");
@@ -125,9 +124,14 @@ export default function ReadingPage() {
     <div className="reading-layout">
       {/* ---------- LEFT : 리더 영역 ---------- */}
       <div className="reader-left">
-        {/* 상단 제목 + 폰트 조절 */}
+        {/* ★ 상단 헤더: 뒤로가기 + 제목 + 폰트 조절 */}
         <div className="reader-header">
-          <h1 className="book-title">{displayTitle}</h1>
+          <div className="header-left-group">
+            <button onClick={() => navigate("/")} className="back-button">
+              ←
+            </button>
+            <h1 className="book-title">{displayTitle}</h1>
+          </div>
 
           <div className="font-controls">
             <button onClick={() => setFontSize((s) => Math.max(14, s - 2))}>

@@ -10,7 +10,6 @@ export default function Home() {
   const [username] = useState("예린");
   const navigate = useNavigate();
 
-
   const books = [
     { id: "romeoandjuliet", cover: "/covers/book7.png" },
     { id: 1, cover: "/covers/book1.png" },
@@ -36,17 +35,15 @@ export default function Home() {
 
             {/* 책 리스트 */}
             <div className="book-list">
-
-            {books.map((b) => (
-              <BookCard
-                key={b.id}
-                id={b.id}
-                cover={b.cover}
-                onClick={() => navigate(`/book/${b.id}`)}
-              />
-            ))}
-          </div>
-
+              {books.map((b) => (
+                <BookCard
+                  key={b.id}
+                  id={b.id}
+                  cover={b.cover}
+                  onClick={() => navigate(`/book/${b.id}`)}
+                />
+              ))}
+            </div>
           </div>
 
           {/* ★ 나무 선반 (화분과 책 모두 아래) */}

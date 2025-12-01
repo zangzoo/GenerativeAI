@@ -65,6 +65,33 @@
   z-index: 20;
 }
 
+.header-left-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-button {
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  border: 2px solid #9d7a54;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.back-button:hover {
+  background-color: #9d7a54;
+  color: white;
+  transform: translateX(-3px);
+}
+
 .book-title {
   margin: 0;
   font-size: 28px; /* 제목 크기 고정 */
@@ -170,10 +197,10 @@
   gap: 8px;
   padding: 8px 10px;
 
-  background: rgba(255, 250, 240, 0.95);  /* 🔥 크림톤 + 약간 투명 */
-  border: 1px solid #e3d7c6;             /* 🔥 부드러운 베이지 라인 */
-  border-radius: 12px;                    /* 🔥 pill edge */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  background: rgba(255, 250, 240, 0.95); /* 🔥 크림톤 + 약간 투명 */
+  border: 1px solid #e3d7c6; /* 🔥 부드러운 베이지 라인 */
+  border-radius: 12px; /* 🔥 pill edge */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 
   z-index: 9999;
   animation: fadeIn 0.15s ease-in-out;
@@ -181,18 +208,18 @@
 
 /* 버튼 */
 .selection-menu button {
-  background: #8b6f47;   /* 🔥 독서앱 메인 컬러 */
+  background: #8b6f47; /* 🔥 독서앱 메인 컬러 */
   color: white;
   border: none;
   padding: 6px 10px;
   font-size: 13px;
-  border-radius: 8px;     /* pill 느낌 */
+  border-radius: 8px; /* pill 느낌 */
   cursor: pointer;
   transition: all 0.15s ease-in-out;
 }
 
 .selection-menu button:hover {
-  background: #a28357;    /* hover 시 밝게 */
+  background: #a28357; /* hover 시 밝게 */
   transform: translateY(-1px);
 }
 

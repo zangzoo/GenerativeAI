@@ -5,6 +5,7 @@ import "../styles/ChatPanel.css";
 export default function ChatPanel({ docId }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   // 🔥 백엔드 /ask 호출
   async function sendMessage(text) {
@@ -12,8 +13,9 @@ export default function ChatPanel({ docId }) {
     if (!question) return;
 
     // 사용자 메시지 추가
-    setMessages(prev => [...prev, { sender: "user", text: question }]);
+    setMessages((prev) => [...prev, { sender: "user", text: question }]);
     setInput("");
+    setIsLoading(true); // ★ 로딩 시작
 
     try {
       const res = await fetch("http://localhost:8000/ask", {
@@ -29,12 +31,14 @@ export default function ChatPanel({ docId }) {
       const data = await res.json();
       const answer = data?.answer || "응답을 가져오지 못했어요.";
 
-      setMessages(prev => [...prev, { sender: "bot", text: answer }]);
+      setMessages((prev) => [...prev, { sender: "bot", text: answer }]);
     } catch (err) {
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         { sender: "bot", text: "❌ 서버 오류가 발생했습니다." },
       ]);
+    } finally {
+      setIsLoading(false); // ★ 로딩 종료
     }
   }
 
@@ -49,6 +53,15 @@ export default function ChatPanel({ docId }) {
             {m.text}
           </div>
         ))}
+
+        {/* ★ 로딩 중 메시지 */}
+        {isLoading && (
+          <div className="chat-message bot loading">
+            <div className="spinner"></div>
+            <span>답변을 생성 중입니다</span>
+            <span className="dots">...</span>
+          </div>
+        )}
       </div>
 
       {/* 입력창 */}
@@ -60,8 +73,14 @@ export default function ChatPanel({ docId }) {
           onKeyDown={(e) => {
             if (e.key === "Enter") sendMessage();
           }}
+          disabled={isLoading} // ★ 로딩 중엔 입력 비활성화
         />
-        <button onClick={() => sendMessage()}>전송</button>
+        <button
+          onClick={() => sendMessage()}
+          disabled={isLoading} // ★ 로딩 중엔 버튼 비활성화
+        >
+          {isLoading ? "⏳" : "전송"}
+        </button>
       </div>
     </div>
   );
