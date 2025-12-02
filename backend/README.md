@@ -53,6 +53,15 @@ cd backend
 pip install -r requirements.txt
 ```
 
+### 2-1️⃣ 환경 변수 (.env)
+
+`.env` 예시
+```
+OPENAI_API_KEY=sk-...
+EMB_MODEL=dragonkue/BGE-m3-ko  # 선택, 기본값 동일
+```
+※ OpenAI 키가 없으면 `/ask`, `/summarize*`가 동작하지 않습니다.
+
 ---
 
 ### 3️⃣ 서버 실행
@@ -70,6 +79,20 @@ uvicorn app:app --reload
 | [http://127.0.0.1:8000](http://127.0.0.1:8000)             | 서버 정상 동작 여부 확인         |
 | [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)   | Swagger API UI (📌 추천) |
 | [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc) | Redoc 문서               |
+
+---
+
+### 5️⃣ 모델/스토리지 준비
+- RAG 스토리지: `backend/model/read_summarize/storage/{doc_id}` (ingest 시 자동 생성)
+- Stable Diffusion: `backend/model/generate/models/stable_diffusion` 경로에 로컬로 모델 파일이 있어야 `/generate` 가동 가능 (네트워크 다운로드 없음)
+- 프론트 기본 샘플 TXT: `backend/model/read_summarize/*.txt`에서 `/api/book/{book_id}`로 제공
+
+### 6️⃣ 추가 유의사항
+- `/generate`: 모델이 없으면 503 반환. 실행 시 모델 로드 로그가 stdout으로 출력되며 CPU/MPS 중 사용 가능한 디바이스를 선택합니다.
+- `/ask`: `question`이 비어 있으면 400, 해당 `doc_id` 스토리지가 없으면 404 반환.
+- CORS: 현재 `allow_origins=["*"]`로 개발 편의 설정. 배포 시 도메인으로 제한하세요.
+- OpenAI 의존: `/ask`, `/summarize`, `/summarize_text`는 `OPENAI_API_KEY`가 없으면 실패합니다.
+- `/api/book/{book_id}`: 로컬에 있는 사전 배포 TXT만 반환(프론트 기본 샘플). 사용자가 프론트에서 업로드한 파일은 서버에 저장되지 않고 브라우저 localStorage에만 보관됩니다.
 
 ---
 
@@ -176,14 +199,3 @@ storage/
      ├── chunks.pkl
      └── meta.json
 ```
-
----
-
-## 🧠 Roadmap (Next)
-
-* [ ] 사용자별 저장 공간
-* [ ] GPU 기반 모델 inference 지원
-* [ ] Chunk 시각화 및 하이라이팅
-* [ ] Docker 배포
-
-
