@@ -20,6 +20,8 @@ export default function Home() {
   const [persistError, setPersistError] = useState("");
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [addWarning, setAddWarning] = useState("");
+  const pdfjsLoaderRef = useRef(null);
 
   const baseBooks = useMemo(
     () => [
@@ -107,27 +109,89 @@ export default function Home() {
     }
   }, [userBooks]);
 
+  const loadPdfJs = () => {
+    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if (pdfjsLoaderRef.current) return pdfjsLoaderRef.current;
+
+    pdfjsLoaderRef.current = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.js";
+      script.onload = () => {
+        if (window.pdfjsLib) {
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+            "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.min.js";
+          resolve(window.pdfjsLib);
+        } else {
+          reject(new Error("pdfjsLib not available after load"));
+        }
+      };
+      script.onerror = () => reject(new Error("Failed to load pdf.js"));
+      document.body.appendChild(script);
+    }).catch((err) => {
+      console.error(err);
+      return null;
+    });
+
+    return pdfjsLoaderRef.current;
+  };
+
+  const extractPdfText = async (file) => {
+    const pdfjsLib = await loadPdfJs();
+    if (!pdfjsLib) throw new Error("pdf.js unavailable");
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let text = "";
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum);
+      const content = await page.getTextContent();
+      const strings = content.items.map((item) => item.str).join(" ");
+      text += strings + "\n\n";
+    }
+    return text.trim();
+  };
+
   const handleAddBook = async (e) => {
     e.preventDefault();
     setAddError("");
+    setAddWarning("");
 
     if (!newBookTitle.trim()) {
       setAddError("책 제목을 입력해주세요.");
       return;
     }
     if (!newBookFile) {
-      setAddError("TXT 파일을 업로드해주세요.");
+      setAddError("TXT 또는 PDF 파일을 업로드해주세요.");
       return;
     }
 
     const ext = newBookFile.name.split(".").pop().toLowerCase();
-    if (ext !== "txt") {
-      setAddError("TXT 파일만 업로드할 수 있어요.");
+    if (!["txt", "pdf"].includes(ext)) {
+      setAddError("TXT 또는 PDF 파일만 업로드할 수 있어요.");
       return;
     }
 
     try {
-      const content = await newBookFile.text();
+      let content = "";
+      let pdfDataUrl = "";
+
+      if (ext === "pdf") {
+        try {
+          content = await extractPdfText(newBookFile);
+        } catch (err) {
+          console.error("PDF 텍스트 추출 실패", err);
+          setAddWarning("PDF 텍스트를 읽지 못했습니다. PDF 보기만 가능합니다.");
+        }
+        const toDataUrl = (file) =>
+          new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        pdfDataUrl = await toDataUrl(newBookFile);
+      } else {
+        content = await newBookFile.text();
+      }
 
       const newBook = {
         id: `user-${Date.now()}`,
@@ -135,7 +199,7 @@ export default function Home() {
         cover: "",
         fileType: ext,
         content,
-        pdfDataUrl: "",
+        pdfDataUrl,
       };
 
       setUserBooks((prev) => [newBook, ...prev]);
@@ -290,10 +354,10 @@ export default function Home() {
                   onChange={(e) => setNewBookTitle(e.target.value)}
                 />
                 <label className="file-label">
-                  <span>{newBookFile ? newBookFile.name : "TXT 업로드"}</span>
+                  <span>{newBookFile ? newBookFile.name : "TXT 또는 PDF 업로드"}</span>
                   <input
                     type="file"
-                    accept=".txt,text/plain"
+                    accept=".txt,.pdf,text/plain,application/pdf"
                     onChange={(e) => setNewBookFile(e.target.files?.[0] || null)}
                   />
                 </label>
@@ -303,6 +367,7 @@ export default function Home() {
               </form>
             )}
             {addError && <div className="add-book-error">{addError}</div>}
+            {addWarning && <div className="add-book-warning">{addWarning}</div>}
             {persistError && <div className="add-book-error">{persistError}</div>}
           </div>
         </div>

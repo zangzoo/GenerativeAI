@@ -99,6 +99,39 @@
   font-family: "Noto Serif KR", serif;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid #cbb59f;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff8ee;
+}
+
+.view-toggle button {
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: #6f5d42;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.view-toggle button.active {
+  background: linear-gradient(180deg, #7a6647 0%, #6f5d42 100%);
+  color: #fffaf3;
+}
+
+.view-toggle button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* 글자 크기 조절 */
 .font-controls {
   display: flex;
@@ -178,6 +211,31 @@
   border-top: 2px solid #dac7a7;
   color: #6f5d42;
   font-weight: 600;
+}
+
+.pdf-status {
+  margin-left: 12px;
+  font-size: 14px;
+  color: #6f5d42;
+}
+
+.pdf-status.error {
+  color: #b0413e;
+}
+
+.pdf-switch-btn {
+  margin-left: 12px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #6f5d42;
+  background: #fff;
+  color: #6f5d42;
+  cursor: pointer;
+}
+
+.pdf-switch-btn:hover {
+  background: #6f5d42;
+  color: #fffaf3;
 }
 
 .reader-controls button {

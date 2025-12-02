@@ -1,6 +1,6 @@
 // ReadingPage.jsx
 import { useParams, useNavigate } from "react-router-dom"; // ★ useNavigate 추가
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../styles/ReadingPage.css";
 import ChatPanel from "../pages/ChatPanel";
 
@@ -14,6 +14,11 @@ export default function ReadingPage() {
   const [loading, setLoading] = useState(true);
   const [fontSize, setFontSize] = useState(18);
   const [pdfSrc, setPdfSrc] = useState(null);
+  const [pdfTextError, setPdfTextError] = useState("");
+  const [isExtractingPdf, setIsExtractingPdf] = useState(false);
+  const [textAvailable, setTextAvailable] = useState(false);
+  const [viewMode, setViewMode] = useState("text"); // "pdf" | "text"
+  const pdfjsLoaderRef = useRef(null);
 
   // 드래그된 텍스트 & 플로팅 메뉴 위치
   const [selectedText, setSelectedText] = useState("");
@@ -33,11 +38,57 @@ export default function ReadingPage() {
       .trim();
   }
 
+  // pdf.js 로더 (필요 시)
+  const loadPdfJs = () => {
+    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if (pdfjsLoaderRef.current) return pdfjsLoaderRef.current;
+
+    pdfjsLoaderRef.current = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.js";
+      script.onload = () => {
+        if (window.pdfjsLib) {
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+            "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.min.js";
+          resolve(window.pdfjsLib);
+        } else {
+          reject(new Error("pdfjsLib not available after load"));
+        }
+      };
+      script.onerror = () => reject(new Error("Failed to load pdf.js"));
+      document.body.appendChild(script);
+    }).catch((err) => {
+      console.error(err);
+      return null;
+    });
+
+    return pdfjsLoaderRef.current;
+  };
+
+  const extractPdfText = async (src) => {
+    const pdfjsLib = await loadPdfJs();
+    if (!pdfjsLib) throw new Error("pdf.js unavailable");
+    const arrayBuffer = await fetch(src).then((res) => res.arrayBuffer());
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let text = "";
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum);
+      const content = await page.getTextContent();
+      const strings = content.items.map((item) => item.str).join(" ");
+      text += strings + "\n\n";
+    }
+    return text.trim();
+  };
+
   // 책 불러오기
   useEffect(() => {
     setLoading(true);
     setRawText("");
     setPdfSrc(null);
+    setPdfTextError("");
+    setIsExtractingPdf(false);
+    setTextAvailable(false);
+    setViewMode("text");
 
     // 1) 로컬에 저장된 사용자 책이면 바로 사용
     try {
@@ -54,6 +105,7 @@ export default function ReadingPage() {
           const pdfData = found.pdfDataUrl || found.content || "";
           if (pdfData) {
             setPdfSrc(pdfData || null);
+            setViewMode("pdf");
             setLoading(false);
             return;
           }
@@ -93,9 +145,53 @@ export default function ReadingPage() {
     load();
   }, [id]);
 
+  // PDF 텍스트 추출 시도 (뷰어에서 요약/이미지 생성을 위해 텍스트 모드 제공)
+  useEffect(() => {
+    if (!pdfSrc) return;
+    if (rawText) {
+      setTextAvailable(true);
+      return;
+    }
+
+    let canceled = false;
+    setIsExtractingPdf(true);
+    setPdfTextError("");
+
+    extractPdfText(pdfSrc)
+      .then((text) => {
+        if (canceled) return;
+        if (text) {
+          setRawText(cleanText(text));
+          setTextAvailable(true);
+        } else {
+          setPdfTextError("PDF에서 텍스트를 찾지 못했어요.");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        if (!canceled) {
+          setPdfTextError("PDF 텍스트 추출에 실패했어요.");
+        }
+      })
+      .finally(() => {
+        if (!canceled) setIsExtractingPdf(false);
+      });
+
+    return () => {
+      canceled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pdfSrc]);
+
+  useEffect(() => {
+    if (pdfSrc && rawText) {
+      setTextAvailable(true);
+    }
+  }, [pdfSrc, rawText]);
+
   // 페이지 나누기 (DOM 기반, 글자 크기 반영)
   useEffect(() => {
-    if (!rawText || pdfSrc) return;
+    if (!rawText || (pdfSrc && viewMode === "pdf")) return;
 
     const pageContainer = document.querySelector(".reader-page-inner");
     if (!pageContainer) return;
@@ -189,20 +285,46 @@ export default function ReadingPage() {
             <h1 className="book-title">{displayTitle}</h1>
           </div>
 
-          <div className="font-controls">
-            <button onClick={() => setFontSize((s) => Math.max(14, s - 2))}>
-              A-
-            </button>
-            <span>{fontSize}px</span>
-            <button onClick={() => setFontSize((s) => Math.min(36, s + 2))}>
-              A+
-            </button>
+          <div className="header-actions">
+            {isPdf && (
+              <div className="view-toggle">
+                <button
+                  className={viewMode === "pdf" ? "active" : ""}
+                  onClick={() => setViewMode("pdf")}
+                >
+                  PDF 보기
+                </button>
+                <button
+                  className={viewMode === "text" ? "active" : ""}
+                  onClick={() => setViewMode("text")}
+                  disabled={!textAvailable && !rawText && isExtractingPdf}
+                  title={
+                    textAvailable
+                      ? "텍스트 보기"
+                      : isExtractingPdf
+                        ? "텍스트 추출 중..."
+                        : "텍스트를 준비할 수 없어요"
+                  }
+                >
+                  텍스트 보기
+                </button>
+              </div>
+            )}
+            <div className="font-controls">
+              <button onClick={() => setFontSize((s) => Math.max(14, s - 2))}>
+                A-
+              </button>
+              <span>{fontSize}px</span>
+              <button onClick={() => setFontSize((s) => Math.min(36, s + 2))}>
+                A+
+              </button>
+            </div>
           </div>
         </div>
 
         {/* 본문 페이지 (실제 보여지는 영역) */}
         <div className="reader-page">
-          {isPdf ? (
+          {isPdf && viewMode === "pdf" ? (
             <div className="pdf-viewer">
               {pdfSrc ? (
                 <iframe
@@ -225,8 +347,24 @@ export default function ReadingPage() {
         </div>
 
         {/* 페이지 네비 (PDF면 안내 문구) */}
-        {isPdf ? (
-          <div className="pdf-notice">PDF는 스크롤로 읽어주세요.</div>
+        {isPdf && viewMode === "pdf" ? (
+          <div className="pdf-notice">
+            PDF는 스크롤로 읽어주세요.
+            {isExtractingPdf && <span className="pdf-status">텍스트 추출 중...</span>}
+            {pdfTextError && <span className="pdf-status error">{pdfTextError}</span>}
+            {textAvailable && (
+              <>
+                <span className="pdf-status">텍스트 보기로 전환해 요약/이미지 생성 가능</span>
+                <button
+                  className="pdf-switch-btn"
+                  type="button"
+                  onClick={() => setViewMode("text")}
+                >
+                  텍스트 보기로 이동
+                </button>
+              </>
+            )}
+          </div>
         ) : (
           <div className="reader-controls">
             <button

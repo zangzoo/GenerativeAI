@@ -281,6 +281,11 @@ html {
   font-size: 14px;
 }
 
+.add-book-warning {
+  color: #8b6f47;
+  font-size: 14px;
+}
+
 /* 오른쪽 앨범 패널 */
 .album-wrapper {
   width: 360px;
