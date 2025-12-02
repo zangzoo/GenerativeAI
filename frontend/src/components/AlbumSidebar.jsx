@@ -67,13 +67,13 @@ export default function AlbumSidebar() {
     }
   }, [weeklySeconds]);
 
-  // 앨범 썸네일 3개 (최근 저장 순)
+  // 앨범 썸네일 2개 (최근 저장 순)
   let thumbs = ["/album/img1.jpg", "/album/img2.png"];
   try {
     const raw = localStorage.getItem("customAlbumPhotos");
     const parsed = raw ? JSON.parse(raw) : [];
     if (Array.isArray(parsed) && parsed.length > 0) {
-      thumbs = parsed.slice(0, 3).map((p) => p.src);
+      thumbs = parsed.slice(0, 2).map((p) => p.src);
     }
   } catch (err) {
     // ignore parse error

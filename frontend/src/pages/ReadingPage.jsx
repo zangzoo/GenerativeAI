@@ -13,20 +13,17 @@ export default function ReadingPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [fontSize, setFontSize] = useState(18);
+  const [pdfSrc, setPdfSrc] = useState(null);
 
   // 드래그된 텍스트 & 플로팅 메뉴 위치
   const [selectedText, setSelectedText] = useState("");
   const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
   const [showMenu, setShowMenu] = useState(false);
+  const [displayTitle, setDisplayTitle] = useState(id || "");
 
   // 페이지 계산용 숨은 박스
   const measureRef = useRef(null);
   const chatRef = useRef(null);
-
-  const titleMap = {
-    romeoandjuliet: "로미오와 줄리엣",
-  };
-  const displayTitle = titleMap[id] || id;
 
   // 줄바꿈 정리
   function cleanText(raw) {
@@ -38,6 +35,50 @@ export default function ReadingPage() {
 
   // 책 불러오기
   useEffect(() => {
+    setLoading(true);
+    setRawText("");
+    setPdfSrc(null);
+
+    // 1) 로컬에 저장된 사용자 책이면 바로 사용
+    try {
+      const raw = localStorage.getItem("userBooks");
+      const parsed = raw ? JSON.parse(raw) : [];
+      const found = Array.isArray(parsed)
+        ? parsed.find((b) => b.id?.toString() === id)
+        : null;
+
+      if (found) {
+        setDisplayTitle(found.title || id);
+
+        if (found.fileType === "pdf") {
+          const pdfData = found.pdfDataUrl || found.content || "";
+          if (pdfData) {
+            setPdfSrc(pdfData || null);
+            setLoading(false);
+            return;
+          }
+          // pdf 데이터가 비어있으면 다음 로직으로 넘어가 텍스트라도 보여줌
+        }
+
+        const textContent = found.content || found.plainText || "";
+        if (textContent) {
+          setRawText(cleanText(textContent));
+          setLoading(false);
+          return;
+        }
+        // 로컬에 있지만 내용이 없으면 로딩만 끄고 종료
+        setLoading(false);
+        return;
+      }
+    } catch (err) {
+      console.error("Failed to load local book", err);
+    }
+
+    const titleMap = {
+      romeoandjuliet: "로미오와 줄리엣",
+    };
+    setDisplayTitle(titleMap[id] || id);
+
     async function load() {
       try {
         const res = await fetch(`http://localhost:8000/api/book/${id}`);
@@ -54,7 +95,7 @@ export default function ReadingPage() {
 
   // 페이지 나누기 (DOM 기반, 글자 크기 반영)
   useEffect(() => {
-    if (!rawText) return;
+    if (!rawText || pdfSrc) return;
 
     const pageContainer = document.querySelector(".reader-page-inner");
     if (!pageContainer) return;
@@ -91,7 +132,7 @@ export default function ReadingPage() {
 
     setPages(newPages);
     setCurrentPage(0);
-  }, [rawText, fontSize]);
+  }, [rawText, fontSize, pdfSrc]);
 
   // 드래그 메뉴
   useEffect(() => {
@@ -133,6 +174,8 @@ export default function ReadingPage() {
     );
   }
 
+  const isPdf = Boolean(pdfSrc);
+
   return (
     <div className="reading-layout">
       {/* ---------- LEFT : 리더 영역 ---------- */}
@@ -159,34 +202,52 @@ export default function ReadingPage() {
 
         {/* 본문 페이지 (실제 보여지는 영역) */}
         <div className="reader-page">
-          <div
-            className="reader-page-inner"
-            style={{ fontSize: `${fontSize}px` }}
-          >
-            {pages[currentPage]}
+          {isPdf ? (
+            <div className="pdf-viewer">
+              {pdfSrc ? (
+                <iframe
+                  title={`${displayTitle} PDF`}
+                  src={pdfSrc}
+                  className="pdf-frame"
+                />
+              ) : (
+                <div className="pdf-fallback">PDF 파일을 불러올 수 없어요.</div>
+              )}
+            </div>
+          ) : (
+            <div
+              className="reader-page-inner"
+              style={{ fontSize: `${fontSize}px` }}
+            >
+              {pages[currentPage]}
+            </div>
+          )}
+        </div>
+
+        {/* 페이지 네비 (PDF면 안내 문구) */}
+        {isPdf ? (
+          <div className="pdf-notice">PDF는 스크롤로 읽어주세요.</div>
+        ) : (
+          <div className="reader-controls">
+            <button
+              disabled={currentPage === 0}
+              onClick={() => setCurrentPage((p) => p - 1)}
+            >
+              ◀ 이전
+            </button>
+
+            <span>
+              {currentPage + 1} / {pages.length}
+            </span>
+
+            <button
+              disabled={currentPage === pages.length - 1}
+              onClick={() => setCurrentPage((p) => p + 1)}
+            >
+              다음 ▶
+            </button>
           </div>
-        </div>
-
-        {/* 페이지 네비 */}
-        <div className="reader-controls">
-          <button
-            disabled={currentPage === 0}
-            onClick={() => setCurrentPage((p) => p - 1)}
-          >
-            ◀ 이전
-          </button>
-
-          <span>
-            {currentPage + 1} / {pages.length}
-          </span>
-
-          <button
-            disabled={currentPage === pages.length - 1}
-            onClick={() => setCurrentPage((p) => p + 1)}
-          >
-            다음 ▶
-          </button>
-        </div>
+        )}
 
         {/* 화면과 동일 스타일의 숨겨진 측정 박스 */}
         <div ref={measureRef} className="measure-box" />
